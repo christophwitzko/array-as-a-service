@@ -87,7 +87,11 @@ function doTest(name, store){
           as.pop(aid, function(err, data){
             (err === null).should.be.true
             data.should.equal('test1')
-            done()
+            as.pop(aid, function(err, data){
+              (err === null).should.be.true
+              data.should.equal('test0')
+              done()
+            })
           })
         })
       })
@@ -96,9 +100,8 @@ function doTest(name, store){
           as.unshift(aid, 'test2', function(err){
             as.getArray(aid, function(err, data){
               (err === null).should.be.true
-              data.length.should.equal(2)
+              data.length.should.equal(1)
               data[0].should.equal('test2')
-              data[1].should.equal('test0')
               done()
             })
           })
@@ -111,7 +114,7 @@ function doTest(name, store){
             data.should.equal('test2')
             as.shift(aid, function(err, data){
               (err === null).should.be.true
-              data.should.equal('test0')
+              ;(data === null).should.be.true
               done()
             })
           })
