@@ -34,15 +34,6 @@ ArrayStore.prototype.getArray = function(id, cb){
   })
 }
 
-ArrayStore.prototype.setArray = function(id, data, cb){
-  var self = this
-  self.hasArray(id, function(err, has){
-    if(!has) return cb('id not found')
-    self._data[id] = data
-    cb(null)
-  })
-}
-
 ArrayStore.prototype.removeArray = function(id, cb){
   var self = this
   self.hasArray(id, function(err, has){
@@ -50,10 +41,6 @@ ArrayStore.prototype.removeArray = function(id, cb){
     delete self._data[id]
     cb(null)
   })
-}
-
-ArrayStore.prototype.getStore = function(cb){
-  cb(null, this._data)
 }
 
 ArrayStore.prototype.getStoreKeys = function(cb){
