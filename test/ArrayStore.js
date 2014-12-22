@@ -3,6 +3,9 @@
 function doTest(name, store){
   var as = store()
   var tid = ''
+  before(function(done) {
+    as.clearStore(done)
+  })
   describe('#' + name + '()', function(){
     describe('#newArray()', function(){
       it('should create a new array', function(done){
