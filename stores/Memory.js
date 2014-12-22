@@ -65,7 +65,7 @@ ArrayStore.prototype.pop = function(id, cb){
   var self = this
   self.hasArray(id, function(err, has){
     if(!has) return cb('id not found')
-    cb(null, self._data[id].pop())
+    cb(null, self._data[id].pop() || null)
   })
 }
 
@@ -82,6 +82,6 @@ ArrayStore.prototype.shift = function(id, cb){
   var self = this
   self.hasArray(id, function(err, has){
     if(!has) return cb('id not found')
-    cb(null, self._data[id].shift())
+    cb(null, self._data[id].shift() || null)
   })
 }
