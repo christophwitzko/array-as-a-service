@@ -9,7 +9,7 @@ module.exports = function(app, store){
   var h = handlers(store)
   app.use(bodyParser.text())
   app.post('/new', h.new)
-  app.get('/:id', h.get)
+  app.get('/:id', h.checkId, h.get)
   app.delete('/:id', h.checkId, h.remove)
   app.get('/:id/pop', h.checkId, h.pop)
   app.get('/:id/shift', h.checkId, h.shift)
