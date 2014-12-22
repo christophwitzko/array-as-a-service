@@ -6,7 +6,7 @@ function doTest(name, store){
   before(function(done) {
     as.clearStore(done)
   })
-  describe('#' + name + '()', function(){
+  describe('#' + name, function(){
     describe('#newArray()', function(){
       it('should create a new array', function(done){
         as.newArray(function(err, id){
@@ -127,6 +127,8 @@ function doTest(name, store){
 
 var stores = require('../stores')
 
-Object.keys(stores).forEach(function(v){
-  doTest(v, stores[v])
+describe('#ArrayStore', function(){
+  Object.keys(stores).forEach(function(v){
+    doTest(v, stores[v])
+  })
 })
