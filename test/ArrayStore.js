@@ -23,17 +23,6 @@ function doTest(name, store){
         })
       })
     })
-    describe('#setArray()', function(){
-      it('should set array', function(done){
-        as.setArray(tid, ['123'], function(err){
-          as.getArray(tid, function(err, data){
-            (err === null).should.be.true
-            data.length.should.equal(1)
-            done()
-          })
-        })
-      })
-    })
     describe('#removeArray()', function(){
       it('should remove array', function(done){
         as.newArray(function(err, id){
@@ -43,15 +32,6 @@ function doTest(name, store){
             (err === null).should.be.true
             done()
           })
-        })
-      })
-    })
-    describe('#getStore()', function(){
-      it('should get store', function(done){
-        as.getStore(function(err, data){
-          (err === null).should.be.true
-          data.should.not.be.empty
-          done()
         })
       })
     })
@@ -68,9 +48,9 @@ function doTest(name, store){
       it('should clear store', function(done){
         as.clearStore(function(err){
           (err === null).should.be.true
-          as.getStore(function(err, data){
+          as.getStoreKeys(function(err, data){
             (err === null).should.be.true
-            data.should.be.empty
+            data.length.should.equal(0)
             done()
           })
         })
