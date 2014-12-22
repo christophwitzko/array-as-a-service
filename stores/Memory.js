@@ -13,8 +13,8 @@ ArrayStore.prototype.newArray = function(cb){
   crypto.randomBytes(10, function(err, buf) {
     if (err) return cb(err)
     var id = base32.encode(buf)
-    self.hasArray(id, function(err){
-      if(!err) return cb('id already in use')
+    self.hasArray(id, function(err, has){
+      if(has) return cb('id already in use')
       self._data[id] = []
       cb(null, id)
     })
@@ -22,22 +22,22 @@ ArrayStore.prototype.newArray = function(cb){
 }
 
 ArrayStore.prototype.hasArray = function(id, cb){
-  if(typeof this._data[id] === 'undefined') return cb('id not found')
-  cb(null)
+  if(typeof this._data[id] === 'undefined') return cb(null, false)
+  cb(null, true)
 }
 
 ArrayStore.prototype.getArray = function(id, cb){
   var self = this
-  self.hasArray(id, function(err){
-    if(err) return cb(err)
+  self.hasArray(id, function(err, has){
+    if(!has) return cb('id not found')
     cb(null, self._data[id])
   })
 }
 
 ArrayStore.prototype.setArray = function(id, data, cb){
   var self = this
-  self.hasArray(id, function(err){
-    if(err) return cb(err)
+  self.hasArray(id, function(err, has){
+    if(!has) return cb('id not found')
     self._data[id] = data
     cb(null)
   })
@@ -45,8 +45,8 @@ ArrayStore.prototype.setArray = function(id, data, cb){
 
 ArrayStore.prototype.removeArray = function(id, cb){
   var self = this
-  self.hasArray(id, function(err){
-    if(err) return cb(err)
+  self.hasArray(id, function(err, has){
+    if(!has) return cb('id not found')
     delete self._data[id]
     cb(null)
   })
@@ -67,8 +67,8 @@ ArrayStore.prototype.clearStore = function(cb){
 
 ArrayStore.prototype.push = function(id, data, cb){
   var self = this
-  self.hasArray(id, function(err){
-    if(err) return cb(err)
+  self.hasArray(id, function(err, has){
+    if(!has) return cb('id not found')
     self._data[id].push(data)
     cb(null)
   })
@@ -76,16 +76,16 @@ ArrayStore.prototype.push = function(id, data, cb){
 
 ArrayStore.prototype.pop = function(id, cb){
   var self = this
-  self.hasArray(id, function(err){
-    if(err) return cb(err)
+  self.hasArray(id, function(err, has){
+    if(!has) return cb('id not found')
     cb(null, self._data[id].pop())
   })
 }
 
 ArrayStore.prototype.unshift = function(id, data, cb){
   var self = this
-  self.hasArray(id, function(err){
-    if(err) return cb(err)
+  self.hasArray(id, function(err, has){
+    if(!has) return cb('id not found')
     self._data[id].unshift(data)
     cb(null)
   })
@@ -93,8 +93,8 @@ ArrayStore.prototype.unshift = function(id, data, cb){
 
 ArrayStore.prototype.shift = function(id, cb){
   var self = this
-  self.hasArray(id, function(err){
-    if(err) return cb(err)
+  self.hasArray(id, function(err, has){
+    if(!has) return cb('id not found')
     cb(null, self._data[id].shift())
   })
 }
