@@ -13,9 +13,11 @@ ArrayStore.prototype.newArray = function(cb){
   crypto.randomBytes(10, function(err, buf) {
     if (err) return cb(err)
     var id = base32.encode(buf)
-    if(typeof self._data[id] !== 'undefined') return cb('id already in use')
-    self._data[id] = []
-    cb(null, id)
+    self.hasArray(id, function(err){
+      if(!err) return cb('id already in use')
+      self._data[id] = []
+      cb(null, id)
+    })
   })
 }
 
@@ -42,9 +44,12 @@ ArrayStore.prototype.setArray = function(id, data, cb){
 }
 
 ArrayStore.prototype.removeArray = function(id, cb){
-  if(typeof this._data[id] === 'undefined') return cb('id not found')
-  delete this._data[id]
-  cb(null)
+  var self = this
+  self.hasArray(id, function(err){
+    if(err) return cb(err)
+    delete self._data[id]
+    cb(null)
+  })
 }
 
 ArrayStore.prototype.getStore = function(cb){
