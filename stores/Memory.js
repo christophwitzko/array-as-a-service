@@ -85,3 +85,11 @@ ArrayStore.prototype.shift = function(id, cb){
     cb(null, self._data[id].shift() || null)
   })
 }
+
+ArrayStore.prototype.slice = function(id, begin, end, cb){
+  var self = this
+  self.hasArray(id, function(err, has){
+    if(!has) return cb('id not found')
+    cb(null, self._data[id].slice(begin, end))
+  })
+}

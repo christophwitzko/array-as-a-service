@@ -121,3 +121,12 @@ ArrayStore.prototype.shift = function(id, cb){
     })
   })
 }
+
+ArrayStore.prototype.slice = function(id, begin, end, cb){
+  var self = this
+  self.hasArray(id, function(err, has){
+    if(err) return cb(err)
+    if(!has) return cb('id not found')
+    self._client.lrange(self._prefix + ':' + id, begin || 0, (end || 0) - 1, cb)
+  })
+}

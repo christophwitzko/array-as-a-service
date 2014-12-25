@@ -1,5 +1,9 @@
 'use strict'
 
+var parallizer = require('parallizer')
+
+var testArray = ['a', 'b', 'c', 'd', 'e']
+
 function doTest(name, store){
   var as = store()
   var tid = ''
@@ -117,6 +121,51 @@ function doTest(name, store){
               ;(data === null).should.be.true
               done()
             })
+          })
+        })
+      })
+      describe('#slice()', function(){
+        before(function(done) {
+          var prl = parallizer.Parallel(1, done)
+          testArray.forEach(function(v){
+            prl.sadd(as.push.bind(as, aid), v, function(err){
+              (err === null).should.be.true
+            })
+          })
+        })
+        it('should slice array (1)', function(done){
+          as.slice(aid, undefined, undefined, function(err, data){
+            (err === null).should.be.true
+            data.should.eql(testArray)
+            done()
+          })
+        })
+        it('should slice array (2)', function(done){
+          as.slice(aid, 1, 2, function(err, data){
+            (err === null).should.be.true
+            data.should.eql(['b'])
+            done()
+          })
+        })
+        it('should slice array (3)', function(done){
+          as.slice(aid, 3, 100, function(err, data){
+            (err === null).should.be.true
+            data.should.eql(['d', 'e'])
+            done()
+          })
+        })
+        it('should slice array (4)', function(done){
+          as.slice(aid, 2, -2, function(err, data){
+            (err === null).should.be.true
+            data.should.eql(['c'])
+            done()
+          })
+        })
+        it('should slice array (5)', function(done){
+          as.slice(aid, -3, 4, function(err, data){
+            (err === null).should.be.true
+            data.should.eql(['c', 'd'])
+            done()
           })
         })
       })
