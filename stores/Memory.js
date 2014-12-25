@@ -101,3 +101,31 @@ ArrayStore.prototype.indexOf = function(id, searchElement, fromIndex, cb){
     cb(null, self._data[id].indexOf(searchElement, fromIndex))
   })
 }
+
+ArrayStore.prototype.set = function(id, index, data, cb){
+  var self = this
+  self.hasArray(id, function(err, has){
+    if(!has) return cb('id not found')
+    cb(null, self._data[id].splice(index, 1, data).pop() || null)
+  })
+}
+
+ArrayStore.prototype.get = function(id, index, cb){
+  var self = this
+  self.hasArray(id, function(err, has){
+    if(!has) return cb('id not found')
+    var pi = parseInt(index, 10)
+    if(isNaN(pi) || pi >= self._data[id].length) return cb(null, null)
+    if(pi < 0) pi += self._data[id].length
+    if(pi < 0) pi = 0
+    cb(null, self._data[id][pi] || null)
+  })
+}
+
+ArrayStore.prototype.remove = function(id, index, cb){
+  var self = this
+  self.hasArray(id, function(err, has){
+    if(!has) return cb('id not found')
+    cb(null, self._data[id].splice(index, 1).pop() || null)
+  })
+}

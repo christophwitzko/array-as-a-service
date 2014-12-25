@@ -206,8 +206,104 @@ function doTest(name, store){
           })
         })
       })
+      describe('#set()', function(){
+        it('should set element at index (1)', function(done){
+          as.set(aid, 0, 'A', function(err, data){
+            (err === null).should.be.true
+            data.should.equal('a')
+            done()
+          })
+        })
+        it('should set element at index (2)', function(done){
+          as.set(aid, 100, 'f', function(err, data){
+            (err === null).should.be.true
+            ;(data === null).should.be.true
+            done()
+          })
+        })
+        it('should set element at index (3)', function(done){
+          as.set(aid, -1, 'F', function(err, data){
+            (err === null).should.be.true
+            data.should.equal('f')
+            done()
+          })
+        })
+        it('should set element at index (4)', function(done){
+          as.set(aid, -100, 'a', function(err, data){
+            (err === null).should.be.true
+            data.should.equal('A')
+            done()
+          })
+        })
+      })
+      describe('#get()', function(){
+        it('should get element at index (1)', function(done){
+          as.get(aid, 0, function(err, data){
+            (err === null).should.be.true
+            data.should.equal('a')
+            done()
+          })
+        })
+        it('should get element at index (2)', function(done){
+          as.get(aid, 100, function(err, data){
+            (err === null).should.be.true
+            ;(data === null).should.be.true
+            done()
+          })
+        })
+        it('should get element at index (3)', function(done){
+          as.get(aid, -1, function(err, data){
+            (err === null).should.be.true
+            data.should.equal('F')
+            done()
+          })
+        })
+        it('should get element at index (4)', function(done){
+          as.get(aid, -100, function(err, data){
+            (err === null).should.be.true
+            data.should.equal('a')
+            done()
+          })
+        })
+      })
+      describe('#remove()', function(){
+        it('should remove element at index (1)', function(done){
+          as.remove(aid, 0, function(err, data){
+            (err === null).should.be.true
+            data.should.equal('a')
+            done()
+          })
+        })
+        it('should remove element at index (2)', function(done){
+          as.remove(aid, 100, function(err, data){
+            (err === null).should.be.true
+            ;(data === null).should.be.true
+            done()
+          })
+        })
+        it('should remove element at index (3)', function(done){
+          as.remove(aid, -1, function(err, data){
+            (err === null).should.be.true
+            data.should.equal('F')
+            done()
+          })
+        })
+        it('should remove element at index (4)', function(done){
+          as.remove(aid, -100, function(err, data){
+            (err === null).should.be.true
+            data.should.equal('b')
+            done()
+          })
+        })
+        it('check complete array', function(done){
+          as.getArray(aid, function(err, data){
+            (err === null).should.be.true
+            data.should.eql(['c', 'd', 'e'])
+            done()
+          })
+        })
+      })
     })
-   
   })
 }
 
