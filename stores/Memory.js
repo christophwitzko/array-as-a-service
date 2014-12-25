@@ -93,3 +93,11 @@ ArrayStore.prototype.slice = function(id, begin, end, cb){
     cb(null, self._data[id].slice(begin, end))
   })
 }
+
+ArrayStore.prototype.indexOf = function(id, searchElement, fromIndex, cb){
+  var self = this
+  self.hasArray(id, function(err, has){
+    if(!has) return cb('id not found')
+    cb(null, self._data[id].indexOf(searchElement, fromIndex))
+  })
+}

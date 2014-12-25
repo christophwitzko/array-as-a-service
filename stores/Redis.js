@@ -130,3 +130,11 @@ ArrayStore.prototype.slice = function(id, begin, end, cb){
     self._client.lrange(self._prefix + ':' + id, begin || 0, (end || 0) - 1, cb)
   })
 }
+
+ArrayStore.prototype.indexOf = function(id, searchElement, fromIndex, cb){
+  var self = this
+  self.getArray(id, function(err, data){
+    if(err) return cb(err)
+    cb(null, data.indexOf(searchElement, fromIndex))
+  })
+}

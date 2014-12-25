@@ -168,6 +168,43 @@ function doTest(name, store){
             done()
           })
         })
+        it('should slice array (6)', function(done){
+          as.slice(aid, '0', '1', function(err, data){
+            (err === null).should.be.true
+            data.should.eql(['a'])
+            done()
+          })
+        })
+      })
+      describe('#indexOf()', function(){
+        it('should get index of element in array', function(done){
+          as.indexOf(aid, 'a', undefined, function(err, data){
+            (err === null).should.be.true
+            data.should.eql(0)
+            done()
+          })
+        })
+        it('should get index of element not in array', function(done){
+          as.indexOf(aid, 'z', undefined, function(err, data){
+            (err === null).should.be.true
+            data.should.equal(-1)
+            done()
+          })
+        })
+        it('should get index of element in array with fromIndex (1)', function(done){
+          as.indexOf(aid, 'a', 1, function(err, data){
+            (err === null).should.be.true
+            data.should.equal(-1)
+            done()
+          })
+        })
+        it('should get index of element in array with fromIndex (2)', function(done){
+          as.indexOf(aid, 'e', 3, function(err, data){
+            (err === null).should.be.true
+            data.should.equal(4)
+            done()
+          })
+        })
       })
     })
    
