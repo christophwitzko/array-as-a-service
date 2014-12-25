@@ -4,7 +4,7 @@
   "description": "Array as a Service",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require should --reporter list --check-leaks",
+    "test": "mocha --require should --reporter spec --check-leaks",
     "start": "nf start"
   },
   "repository": {
