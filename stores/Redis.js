@@ -79,7 +79,7 @@ ArrayStore.prototype.push = function(id, data, cb){
   self.hasArray(id, function(err, has){
     if(err) return cb(err)
     if(!has) return cb('id not found')
-    self._client.rpush(self._prefix + ':' + id, data, function(err, reply){
+    self._client.rpush(self._prefix + ':' + id, data.toString(), function(err, reply){
       if(err) return cb(err)
       cb(null)
     })
@@ -103,7 +103,7 @@ ArrayStore.prototype.unshift = function(id, data, cb){
   self.hasArray(id, function(err, has){
     if(err) return cb(err)
     if(!has) return cb('id not found')
-    self._client.lpush(self._prefix + ':' + id, data, function(err, reply){
+    self._client.lpush(self._prefix + ':' + id, data.toString(), function(err, reply){
       if(err) return cb(err)
       cb(null)
     })

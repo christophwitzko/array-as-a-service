@@ -56,7 +56,7 @@ ArrayStore.prototype.push = function(id, data, cb){
   var self = this
   self.hasArray(id, function(err, has){
     if(!has) return cb('id not found')
-    self._data[id].push(data)
+    self._data[id].push(data.toString())
     cb(null)
   })
 }
@@ -73,7 +73,7 @@ ArrayStore.prototype.unshift = function(id, data, cb){
   var self = this
   self.hasArray(id, function(err, has){
     if(!has) return cb('id not found')
-    self._data[id].unshift(data)
+    self._data[id].unshift(data.toString())
     cb(null)
   })
 }
