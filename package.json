@@ -27,6 +27,7 @@
     "debug": "^2.1.0",
     "express": "^4.10.6",
     "hiredis": "^0.1.17",
+    "node-uuid": "^1.4.2",
     "parallizer": "^1.1.1",
     "redis": "^0.12.1"
   },

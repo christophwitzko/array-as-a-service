@@ -1,7 +1,6 @@
 'use strict'
 
-var crypto = require('crypto')
-var base32 = require('base32')
+var helper = require('./helper.js')
 
 var ArrayStore = module.exports = function(){
   if(!(this instanceof ArrayStore)) return new ArrayStore()
@@ -10,9 +9,8 @@ var ArrayStore = module.exports = function(){
 
 ArrayStore.prototype.newArray = function(cb){
   var self = this
-  crypto.randomBytes(10, function(err, buf) {
-    if (err) return cb(err)
-    var id = base32.encode(buf)
+  helper.generateArrayId(function(err, id){
+    if(err) return cb(err)
     self.hasArray(id, function(err, has){
       if(has) return cb('id already in use')
       self._data[id] = []
@@ -98,7 +96,7 @@ ArrayStore.prototype.indexOf = function(id, searchElement, fromIndex, cb){
   var self = this
   self.hasArray(id, function(err, has){
     if(!has) return cb('id not found')
-    cb(null, self._data[id].indexOf(searchElement, fromIndex))
+    cb(null, self._data[id].indexOf(searchElement.toString(), fromIndex))
   })
 }
 
@@ -106,7 +104,9 @@ ArrayStore.prototype.set = function(id, index, data, cb){
   var self = this
   self.hasArray(id, function(err, has){
     if(!has) return cb('id not found')
-    cb(null, self._data[id].splice(index, 1, data).pop() || null)
+    var pi = helper.parseIndex(index, self._data[id].length)
+    if(pi < 0) return cb('index out of range')
+    cb(null, self._data[id].splice(pi, 1, data.toString()).pop() || null)
   })
 }
 
@@ -114,10 +114,8 @@ ArrayStore.prototype.get = function(id, index, cb){
   var self = this
   self.hasArray(id, function(err, has){
     if(!has) return cb('id not found')
-    var pi = parseInt(index, 10)
-    if(isNaN(pi) || pi >= self._data[id].length) return cb(null, null)
-    if(pi < 0) pi += self._data[id].length
-    if(pi < 0) pi = 0
+    var pi = helper.parseIndex(index, self._data[id].length)
+    if(pi < 0) return cb('index out of range')
     cb(null, self._data[id][pi] || null)
   })
 }
@@ -126,6 +124,8 @@ ArrayStore.prototype.remove = function(id, index, cb){
   var self = this
   self.hasArray(id, function(err, has){
     if(!has) return cb('id not found')
+    var pi = helper.parseIndex(index, self._data[id].length)
+    if(pi < 0) return cb('index out of range')
     cb(null, self._data[id].splice(index, 1).pop() || null)
   })
 }

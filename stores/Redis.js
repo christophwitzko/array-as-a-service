@@ -1,7 +1,7 @@
 'use strict'
 
-var crypto = require('crypto')
-var base32 = require('base32')
+var helper = require('./helper.js')
+
 var redis = require('redis')
 var parallizer = require('parallizer')
 
@@ -14,9 +14,8 @@ var ArrayStore = module.exports = function(){
 
 ArrayStore.prototype.newArray = function(cb){
   var self = this
-  crypto.randomBytes(10, function(err, buf) {
+  helper.generateArrayId(function(err, id){
     if(err) return cb(err)
-    var id = base32.encode(buf)
     self.hasArray(id, function(err, has){
       if(err) return cb(err)
       self._client.sadd(self._idset, id, function(err, reply){
@@ -135,6 +134,55 @@ ArrayStore.prototype.indexOf = function(id, searchElement, fromIndex, cb){
   var self = this
   self.getArray(id, function(err, data){
     if(err) return cb(err)
-    cb(null, data.indexOf(searchElement, fromIndex))
+    cb(null, data.indexOf(searchElement.toString(), fromIndex))
+  })
+}
+
+ArrayStore.prototype.set = function(id, index, data, cb){
+  var self = this
+  self.hasArray(id, function(err, has){
+    if(err) return cb(err)
+    if(!has) return cb('id not found')
+    self.getArray(id, function(err, arr){
+      if(err) return cb(err)
+      var pi = helper.parseIndex(index, arr.length)
+      if(pi < 0) return cb('index out of range')
+      self._client.lset(self._prefix + ':' + id, pi, data.toString(), function(err, reply){
+        if(err) return cb(err)
+        cb(null, arr[pi] || null)
+      })
+    })
+  })
+}
+
+ArrayStore.prototype.get = function(id, index, cb){
+  var self = this
+  self.hasArray(id, function(err, has){
+    if(err) return cb(err)
+    if(!has) return cb('id not found')
+    self.getArray(id, function(err, data){
+      if(err) return cb(err)
+      var pi = helper.parseIndex(index, data.length)
+      if(pi < 0) return cb('index out of range')
+      cb(null, data[pi] || null)
+    })
+  })
+}
+
+ArrayStore.prototype.remove = function(id, index, cb){
+  var self = this
+  self.hasArray(id, function(err, has){
+    if(err) return cb(err)
+    if(!has) return cb('id not found')
+    self.getArray(id, function(err, arr){
+      if(err) return cb(err)
+      var pi = helper.parseIndex(index, arr.length)
+      if(pi < 0) return cb('index out of range')
+      var duuid = helper.generateUuid()
+      self._client.multi().lset(self._prefix + ':' + id, pi, duuid).lrem(self._prefix + ':' + id, 1, duuid).exec(function(err, reply){
+        if(err) return cb(err)
+        cb(null, arr[pi] || null)
+      })
+    })
   })
 }
