@@ -216,22 +216,20 @@ function doTest(name, store){
         })
         it('should set element at index (2)', function(done){
           as.set(aid, 100, 'f', function(err, data){
-            (err === null).should.be.true
-            ;(data === null).should.be.true
+            err.should.equal('index out of range')
             done()
           })
         })
         it('should set element at index (3)', function(done){
-          as.set(aid, -1, 'F', function(err, data){
+          as.set(aid, -1, 'E', function(err, data){
             (err === null).should.be.true
-            data.should.equal('f')
+            data.should.equal('e')
             done()
           })
         })
         it('should set element at index (4)', function(done){
           as.set(aid, -100, 'a', function(err, data){
-            (err === null).should.be.true
-            data.should.equal('A')
+            err.should.equal('index out of range')
             done()
           })
         })
@@ -240,28 +238,20 @@ function doTest(name, store){
         it('should get element at index (1)', function(done){
           as.get(aid, 0, function(err, data){
             (err === null).should.be.true
-            data.should.equal('a')
+            data.should.equal('A')
             done()
           })
         })
         it('should get element at index (2)', function(done){
           as.get(aid, 100, function(err, data){
-            (err === null).should.be.true
-            ;(data === null).should.be.true
+            err.should.equal('index out of range')
             done()
           })
         })
         it('should get element at index (3)', function(done){
           as.get(aid, -1, function(err, data){
             (err === null).should.be.true
-            data.should.equal('F')
-            done()
-          })
-        })
-        it('should get element at index (4)', function(done){
-          as.get(aid, -100, function(err, data){
-            (err === null).should.be.true
-            data.should.equal('a')
+            data.should.equal('E')
             done()
           })
         })
@@ -270,35 +260,27 @@ function doTest(name, store){
         it('should remove element at index (1)', function(done){
           as.remove(aid, 0, function(err, data){
             (err === null).should.be.true
-            data.should.equal('a')
+            data.should.equal('A')
             done()
           })
         })
         it('should remove element at index (2)', function(done){
-          as.remove(aid, 100, function(err, data){
+          as.remove(aid, -1, function(err, data){
             (err === null).should.be.true
-            ;(data === null).should.be.true
+            data.should.equal('E')
             done()
           })
         })
         it('should remove element at index (3)', function(done){
-          as.remove(aid, -1, function(err, data){
-            (err === null).should.be.true
-            data.should.equal('F')
-            done()
-          })
-        })
-        it('should remove element at index (4)', function(done){
           as.remove(aid, -100, function(err, data){
-            (err === null).should.be.true
-            data.should.equal('b')
+            err.should.equal('index out of range')
             done()
           })
         })
         it('check complete array', function(done){
           as.getArray(aid, function(err, data){
             (err === null).should.be.true
-            data.should.eql(['c', 'd', 'e'])
+            data.should.eql(['b', 'c', 'd'])
             done()
           })
         })
