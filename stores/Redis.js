@@ -1,8 +1,19 @@
 'use strict'
 
 var helper = require('./helper.js')
-
 var parallizer = require('parallizer')
+
+function storeOp(cmd, get){
+  return function(id, data, cb){
+    var self = this
+    self.hasArray(id, function(err, has){
+      if(err) return cb(err)
+      if(!has) return cb('id not found')
+      if(get) return self._client[cmd](self._prefix + ':' + id, data)
+      self._client[cmd](self._prefix + ':' + id, data.toString(), cb)
+    })
+  }
+}
 
 var ArrayStore = module.exports = function(redisUrl, prefix){
   if(!(this instanceof ArrayStore)) return new ArrayStore()
@@ -17,7 +28,8 @@ ArrayStore.prototype.newArray = function(cb){
     if(err) return cb(err)
     self.hasArray(id, function(err, has){
       if(err) return cb(err)
-      self._client.sadd(self._idset, id, function(err, reply){
+      if(has) return cb('id already in use')
+      self._client.sadd(self._idset, id, function(err){
         if(err) return cb(err)
         cb(null, id)
       })
@@ -46,10 +58,8 @@ ArrayStore.prototype.removeArray = function(id, cb){
   self.hasArray(id, function(err, has){
     if(err) return cb(err)
     if(!has) return cb('id not found')
-    self._client.srem(self._idset, id, function(err, reply){
-      self._client.del(self._prefix + ':' + id, function(err, reply){
-        cb(err)
-      })
+    self._client.srem(self._idset, id, function(){
+      self._client.del(self._prefix + ':' + id, cb)
     })
   })
 }
@@ -60,9 +70,7 @@ ArrayStore.prototype.getStoreKeys = function(cb){
 
 ArrayStore.prototype.clearStore = function(cb){
   var self = this
-  var prl = parallizer.Parallel(1, function(){
-    cb(null)
-  })
+  var prl = parallizer.Parallel(1, cb.bind(null, null))
   self._client.keys(self._prefix + ':*', function(err, keys){
     if(err) return cb(err)
     if(keys.length === 0) return cb(null)
@@ -72,53 +80,13 @@ ArrayStore.prototype.clearStore = function(cb){
   })
 }
 
-ArrayStore.prototype.push = function(id, data, cb){
-  var self = this
-  self.hasArray(id, function(err, has){
-    if(err) return cb(err)
-    if(!has) return cb('id not found')
-    self._client.rpush(self._prefix + ':' + id, data.toString(), function(err, reply){
-      if(err) return cb(err)
-      cb(null)
-    })
-  })
-}
+ArrayStore.prototype.push = storeOp('rpush')
 
-ArrayStore.prototype.pop = function(id, cb){
-  var self = this
-  self.hasArray(id, function(err, has){
-    if(err) return cb(err)
-    if(!has) return cb('id not found')
-    self._client.rpop(self._prefix + ':' + id, function(err, data){
-      if(err) return cb(err)
-      cb(null, data)
-    })
-  })
-}
+ArrayStore.prototype.pop = storeOp('rpop', true)
 
-ArrayStore.prototype.unshift = function(id, data, cb){
-  var self = this
-  self.hasArray(id, function(err, has){
-    if(err) return cb(err)
-    if(!has) return cb('id not found')
-    self._client.lpush(self._prefix + ':' + id, data.toString(), function(err, reply){
-      if(err) return cb(err)
-      cb(null)
-    })
-  })
-}
+ArrayStore.prototype.unshift = storeOp('lpush')
 
-ArrayStore.prototype.shift = function(id, cb){
-  var self = this
-  self.hasArray(id, function(err, has){
-    if(err) return cb(err)
-    if(!has) return cb('id not found')
-    self._client.lpop(self._prefix + ':' + id, function(err, data){
-      if(err) return cb(err)
-      cb(null, data)
-    })
-  })
-}
+ArrayStore.prototype.shift = storeOp('lpop', true)
 
 ArrayStore.prototype.slice = function(id, begin, end, cb){
   var self = this
@@ -146,7 +114,7 @@ ArrayStore.prototype.set = function(id, index, data, cb){
       if(err) return cb(err)
       var pi = helper.parseIndex(index, arr.length)
       if(pi < 0) return cb('index out of range')
-      self._client.lset(self._prefix + ':' + id, pi, data.toString(), function(err, reply){
+      self._client.lset(self._prefix + ':' + id, pi, data.toString(), function(err){
         if(err) return cb(err)
         cb(null, arr[pi] || null)
       })
@@ -178,7 +146,7 @@ ArrayStore.prototype.remove = function(id, index, cb){
       var pi = helper.parseIndex(index, arr.length)
       if(pi < 0) return cb('index out of range')
       var duuid = helper.generateUuid()
-      self._client.multi().lset(self._prefix + ':' + id, pi, duuid).lrem(self._prefix + ':' + id, 1, duuid).exec(function(err, reply){
+      self._client.multi().lset(self._prefix + ':' + id, pi, duuid).lrem(self._prefix + ':' + id, 1, duuid).exec(function(err){
         if(err) return cb(err)
         cb(null, arr[pi] || null)
       })

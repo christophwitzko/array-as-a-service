@@ -2,6 +2,18 @@
 
 var helper = require('./helper.js')
 
+function storeOp(cmd, get){
+  return function(id, data, cb){
+    var self = this
+    self.hasArray(id, function(err, has){
+      if(!has) return cb('id not found')
+      if(get) return data(null, self._data[id][cmd]() || null)
+      self._data[id][cmd](data.toString())
+      cb(null)
+    })
+  }
+}
+
 var ArrayStore = module.exports = function(){
   if(!(this instanceof ArrayStore)) return new ArrayStore()
   this._data = {}
@@ -50,39 +62,13 @@ ArrayStore.prototype.clearStore = function(cb){
   cb(null)
 }
 
-ArrayStore.prototype.push = function(id, data, cb){
-  var self = this
-  self.hasArray(id, function(err, has){
-    if(!has) return cb('id not found')
-    self._data[id].push(data.toString())
-    cb(null)
-  })
-}
+ArrayStore.prototype.push = storeOp('push')
 
-ArrayStore.prototype.pop = function(id, cb){
-  var self = this
-  self.hasArray(id, function(err, has){
-    if(!has) return cb('id not found')
-    cb(null, self._data[id].pop() || null)
-  })
-}
+ArrayStore.prototype.pop = storeOp('pop', true)
 
-ArrayStore.prototype.unshift = function(id, data, cb){
-  var self = this
-  self.hasArray(id, function(err, has){
-    if(!has) return cb('id not found')
-    self._data[id].unshift(data.toString())
-    cb(null)
-  })
-}
+ArrayStore.prototype.unshift = storeOp('unshift')
 
-ArrayStore.prototype.shift = function(id, cb){
-  var self = this
-  self.hasArray(id, function(err, has){
-    if(!has) return cb('id not found')
-    cb(null, self._data[id].shift() || null)
-  })
-}
+ArrayStore.prototype.shift = storeOp('shift', true)
 
 ArrayStore.prototype.slice = function(id, begin, end, cb){
   var self = this
