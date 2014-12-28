@@ -137,8 +137,9 @@ module.exports = function(store){
     },
     slice: function(req, res){
       var id = req.params.id
-      var begin = req.params.begin
-      var end = req.params.end
+      var begin = parseInt(req.params.begin, 10)
+      var end = parseInt(req.params.end, 10)
+      if(isNaN(begin) || isNaN(end)) return res.send({error: 'invalid begin or end'})
       debug('slicing at (%s - %s) from id: %s', begin, end, id)
       store.slice(id, begin, end, function(err, data){
         if(err) {
