@@ -4,7 +4,7 @@ var debug = require('debug')('aaas:main')
 var express = require('express')
 var app = express()
 
-var storeType = process.env.USE_REDIS ? 'Redis' : 'Memory'
+var storeType = (process.env.USE_REDIS ? process.env.USE_REDIS.toLowerCase() === 'true' : false) ? 'Redis' : 'Memory'
 debug('using "%s" store', storeType)
 var store = require('./stores')[storeType]()
 
