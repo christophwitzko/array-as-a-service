@@ -17,6 +17,7 @@ function handleData(key){
 }
 
 function storeOp(store, cmd, get, he, logTpl, aidx, key){
+  logTpl = aidx ? (logTpl || '<cmd> at %d from id: %s') : logTpl
   logTpl = (logTpl || '<cmd>ing <get> id: %s').replace(/<cmd>/gm, cmd).replace(/<get>/gm, get ? 'from' : 'to')
   var handleFn = he ? handleError : handleData(key || 'data')
   return function(req, res){
@@ -73,10 +74,10 @@ module.exports = function(store){
     shift: storeOp(store, 'shift', true, false),
     push: storeOp(store, 'push', false, true),
     unshift: storeOp(store, 'unshift', false, true),
-    set: storeOp(store, 'set', false, true, '<cmd>ting at %d from id: %s', true),
-    get: storeOp(store, 'get', true, false, '<cmd>ting at %d from id: %s', true),
-    remove: storeOp(store, 'remove', true, false, 'removeing at %d from id: %s', true),
-    indexOf: storeOp(store, 'indexOf', false, false, 'indexof at %d from id: %s', true, 'index'),
+    set: storeOp(store, 'set', false, true, null, true),
+    get: storeOp(store, 'get', true, false, null, true),
+    remove: storeOp(store, 'remove', true, false, null, true),
+    indexOf: storeOp(store, 'indexOf', false, false, null, true, 'index'),
     slice: function(req, res){
       debug('slicing at (%s - %s) from id: %s', req.params.begin, req.params.end, req.params.id)
       store.slice(req.params.id, req.params.begin, req.params.end, handleData('data').bind(null, res))
