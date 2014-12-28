@@ -49,7 +49,7 @@ module.exports = function(store){
       debug('deleting id: %s', id)
       store.removeArray(id, function(err){
         if(err) debug('error: %s', err)
-        return res.send({error: err.message || err})
+        return res.send({error: (err && err.message) ? err.message : err})
       })
     },
     pop: function(req, res){
@@ -79,7 +79,7 @@ module.exports = function(store){
       debug('pushing to id: %s', id)
       store.push(id, req.body, function(err){
         if(err) debug('error: %s', err)
-        return res.send({error: err.message || err})
+        return res.send({error: (err && err.message) ? err.message : err})
       })
     },
     unshift: function(req, res){
@@ -87,7 +87,7 @@ module.exports = function(store){
       debug('unshifting to id: %s', id)
       store.unshift(id, req.body, function(err){
         if(err) debug('error: %s', err)
-        return res.send({error: err.message || err})
+        return res.send({error: (err && err.message) ? err.message : err})
       })
     },
     set: function(req, res){
@@ -96,7 +96,7 @@ module.exports = function(store){
       debug('setting at %d to id: %s', index, id)
       store.set(id, index, req.body, function(err){
         if(err) debug('error: %s', err)
-        return res.send({error: err.message || err})
+        return res.send({error: (err && err.message) ? err.message : err})
       })
     },
     get: function(req, res){
@@ -126,7 +126,7 @@ module.exports = function(store){
     indexOf: function(req, res){
       var id = req.params.id
       var index = req.params.index || 0
-      debug('indexOf at %d from id: %s', index, id)
+      debug('indexof at %d from id: %s', index, id)
       store.indexOf(id, req.body, index, function(err, data){
         if(err) {
           debug('error: %s', err)
