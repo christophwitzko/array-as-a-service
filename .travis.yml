@@ -8,6 +8,7 @@ after_success:
 env:
   global:
     - COVERALLS_SERVICE_NAME="travis-ci"
+    - secure: "V4XydjkUdqkChbTeMVxkWTIVLeEdIGbUkVl24QgTHJrtC+hU0XlE8T26pP/BG4jzEJS58rXfFGDt8Y50g5h5CbG2hbjbeM0+y8hWWiOZWXIxiyYRiHS6niEPhsyddAA6MqmVuZFKuFjrDLWwuGSkM3JYp1JjQbXi6UlPo5ReXj8="
 sudo: false
 notifications:
   email: false
