@@ -6,7 +6,7 @@ var app = express()
 
 var storeType = (process.env.USE_REDIS ? process.env.USE_REDIS.toLowerCase() === 'true' : false) ? 'Redis' : 'Memory'
 debug('using "%s" store', storeType)
-var store = require('./stores')[storeType]()
+var store = require('./stores')[storeType](process.env.REDIS_URL || process.env.REDISTOGO_URL)
 
 require('./routes')(app, store)
 

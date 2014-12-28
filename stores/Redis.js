@@ -2,14 +2,13 @@
 
 var helper = require('./helper.js')
 
-var redis = require('redis')
 var parallizer = require('parallizer')
 
-var ArrayStore = module.exports = function(){
+var ArrayStore = module.exports = function(redisUrl, prefix){
   if(!(this instanceof ArrayStore)) return new ArrayStore()
-  this._prefix = 'aaas'
+  this._prefix = prefix || 'aaas'
   this._idset = this._prefix + ':idset'
-  this._client = redis.createClient()
+  this._client = helper.parseRedisUrl(redisUrl)
 }
 
 ArrayStore.prototype.newArray = function(cb){
