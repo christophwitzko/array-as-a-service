@@ -3,6 +3,11 @@ node_js:
   - '0.10'
 services:
   - redis-server
+after_success:
+  - npm run coveralls
+env:
+  global:
+    - COVERALLS_SERVICE_NAME="travis-ci"
 sudo: false
 notifications:
   email: false

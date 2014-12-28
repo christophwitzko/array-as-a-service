@@ -4,7 +4,11 @@
   "description": "Array as a Service",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require should --reporter spec --check-leaks",
+    "mocha-test": "mocha --require should --reporter spec --check-leaks",
+    "travis-coverage": "mocha --require blanket --require should --reporter travis-cov",
+    "test": "npm run mocha-test && npm run travis-coverage",
+    "coverage": "mocha --require blanket --require should --reporter html-cov > coverage.html",
+    "coveralls": "mocha --require blanket --require should --reporter mocha-lcov-reporter | coveralls",
     "start": "nf start"
   },
   "repository": {
@@ -32,9 +36,24 @@
     "redis": "^0.12.1"
   },
   "devDependencies": {
+    "blanket": "^1.1.6",
+    "coveralls": "^2.11.2",
     "foreman": "^1.1.0",
     "mocha": "^2.0.1",
+    "mocha-lcov-reporter": "0.0.1",
     "should": "^4.4.1",
-    "supertest": "^0.15.0"
+    "supertest": "^0.15.0",
+    "travis-cov": "^0.2.5"
+  },
+  "config": {
+    "blanket": {
+      "pattern": [
+        "stores",
+        "routes"
+      ]
+    },
+    "travis-cov": {
+      "threshold": 80
+    }
   }
 }
