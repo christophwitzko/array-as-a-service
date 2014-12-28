@@ -65,11 +65,19 @@ module.exports = function(store){
       next()
     },
     newA: function(req, res){
-      debug('generating new array...')
+      debug('generating new array')
       store.newArray(handleData('id').bind(null, res))
     },
     getA: storeOp(store, 'getArray', true, false, 'getting id: %s'),
     removeA: storeOp(store, 'removeArray', true, true, 'deleting id: %s'),
+    storeKeys: function(req, res){
+      debug('sending store keys')
+      store.getStoreKeys(handleData('keys').bind(null, res))
+    },
+    clearStore: function(req, res){
+      debug('clearing store')
+      store.clearStore(handleError.bind(null, res))
+    },
     pop: storeOp(store, 'pop', true, false),
     shift: storeOp(store, 'shift', true, false),
     push: storeOp(store, 'push', false, true),

@@ -8,6 +8,7 @@ var store = require('../stores').Redis()
 require('../routes')(app, store)
 
 var testArray = ['a', 'b', 'c', 'd', 'c']
+var authKey = 'YWRtaW46MTIzNDU2'
 
 describe('#HTTP_API', function(){
   var aid = ''
@@ -354,6 +355,28 @@ describe('#HTTP_API', function(){
         })
     })
   })
+  describe('GET /', function(){
+    it('get store (unauthorized)', function(done){
+      request(app)
+        .get('/')
+        .expect(401)
+        .end(function(err, res){
+          (err === null).should.be.true
+          done()
+        })
+    })
+    it('get store', function(done){
+      request(app)
+        .get('/')
+        .set('Authorization', 'Basic ' + authKey)
+        .expect(200)
+        .end(function(err, res){
+          (!!~res.body.keys.indexOf(aid)).should.be.true
+          ;(err === null).should.be.true
+          done()
+        })
+    })
+  })
   describe('DELETE /:id', function(){
     it('delete array', function(done){
       request(app)
@@ -370,6 +393,43 @@ describe('#HTTP_API', function(){
         .expect(200, /id not found/)
         .end(function(err, res){
           (err === null).should.be.true
+          done()
+        })
+    })
+  })
+  describe('DELETE /', function(){
+    before(function(done){
+      store.newArray(function(err, id){
+        (err === null).should.be.true
+        done()
+      })
+    })
+    it('delete store (unauthorized)', function(done){
+      request(app)
+        .delete('/')
+        .expect(401)
+        .end(function(err, res){
+          (err === null).should.be.true
+          done()
+        })
+    })
+    it('delete store', function(done){
+      request(app)
+        .delete('/')
+        .set('Authorization', 'Basic ' + authKey)
+        .end(function(err, res){
+          (err === null).should.be.true
+          done()
+        })
+    })
+    it('check store', function(done){
+      request(app)
+        .get('/')
+        .set('Authorization', 'Basic ' + authKey)
+        .expect(200)
+        .end(function(err, res){
+          res.body.keys.length.should.be.equal(0)
+          ;(err === null).should.be.true
           done()
         })
     })

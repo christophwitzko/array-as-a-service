@@ -1,12 +1,15 @@
 'use strict'
 
-var bodyParser = require('body-parser')
-
 var handlers = require('./handlers.js')
+
+var basicAuth = require('basic-auth-connect')(process.env.USERNAME || 'admin', process.env.PASSWORD || '123456')
+var bodyParser = require('body-parser')
 
 module.exports = function(app, store){
   var h = handlers(store)
   app.use(bodyParser.text())
+  app.get('/', basicAuth, h.storeKeys)
+  app.delete('/', basicAuth, h.clearStore)
   app.post('/new', h.newA)
   app.get('/:id', h.checkId, h.getA)
   app.delete('/:id', h.checkId, h.removeA)
