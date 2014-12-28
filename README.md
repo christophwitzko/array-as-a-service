@@ -1,4 +1,5 @@
 # Array as a Service (AaaS)
+[![Travis](https://img.shields.io/travis/christophwitzko/array-as-a-service.svg?style=flat)](https://travis-ci.org/christophwitzko/array-as-a-service) [![Coveralls](https://img.shields.io/coveralls/christophwitzko/array-as-a-service.svg?style=flat)](https://coveralls.io/r/christophwitzko/array-as-a-service)
 
 ## Run AaaS
 
