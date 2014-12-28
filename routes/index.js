@@ -10,7 +10,7 @@ module.exports = function(app, store){
   app.use(bodyParser.text())
   app.get('/', basicAuth, h.storeKeys)
   app.delete('/', basicAuth, h.clearStore)
-  app.post('/new', h.newA)
+  app.post('/', h.newA)
   app.get('/:id', h.checkId, h.getA)
   app.delete('/:id', h.checkId, h.removeA)
   app.get('/:id/pop', h.checkId, h.pop)

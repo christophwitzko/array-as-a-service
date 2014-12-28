@@ -12,10 +12,10 @@ var authKey = 'YWRtaW46MTIzNDU2'
 
 describe('#HTTP_API', function(){
   var aid = ''
-  describe('POST /new', function(){
+  describe('POST /', function(){
     it('generate new array', function(done){
       request(app)
-        .post('/new')
+        .post('/')
         .expect(200, /id/)
         .end(function(err, res){
           (err === null).should.be.true
@@ -40,7 +40,7 @@ describe('#HTTP_API', function(){
       request(app)
         .post('/' + aid + '/push')
         .type('text/plain')
-        .expect(200, /no data/)
+        .expect(200, /"error":"no data"/)
         .end(function(err, res){
           (err === null).should.be.true
           done()
@@ -74,7 +74,7 @@ describe('#HTTP_API', function(){
       request(app)
         .post('/' + aid + '/unshift')
         .type('text/plain')
-        .expect(200, /no data/)
+        .expect(200, /"error":"no data"/)
         .end(function(err, res){
           (err === null).should.be.true
           done()
@@ -116,7 +116,7 @@ describe('#HTTP_API', function(){
     it('use invalid id', function(done){
       request(app)
         .get('/asd')
-        .expect(200, /invalid id/)
+        .expect(200, /"error":"invalid id"/)
         .end(function(err, res){
           (err === null).should.be.true
           done()
@@ -390,7 +390,7 @@ describe('#HTTP_API', function(){
     it('array has been removed', function(done){
       request(app)
         .get('/' + aid)
-        .expect(200, /id not found/)
+        .expect(200, /"error":"id not found"/)
         .end(function(err, res){
           (err === null).should.be.true
           done()
