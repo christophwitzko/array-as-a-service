@@ -19,5 +19,5 @@ module.exports = function(app, store){
   app.post('/:id/:index', h.checkId, h.checkIndex, h.checkBody, h.set)
   app.get('/:id/:index', h.checkId, h.checkIndex, h.get)
   app.delete('/:id/:index', h.checkId, h.checkIndex, h.remove)
-  app.get('/:id/:begin/:end', h.checkId, h.slice)
+  app.get('/:id/:begin/:end', h.checkId, h.checkBeginEnd, h.slice)
 }

@@ -178,28 +178,28 @@ function doTest(name, store){
       })
       describe('#indexOf()', function(){
         it('should get index of element in array', function(done){
-          as.indexOf(aid, 'a', undefined, function(err, data){
+          as.indexOf(aid, undefined, 'a', function(err, data){
             (err === null).should.be.true
             data.should.eql(0)
             done()
           })
         })
         it('should get index of element not in array', function(done){
-          as.indexOf(aid, 'z', undefined, function(err, data){
+          as.indexOf(aid, undefined, 'z', function(err, data){
             (err === null).should.be.true
             data.should.equal(-1)
             done()
           })
         })
         it('should get index of element in array with fromIndex (1)', function(done){
-          as.indexOf(aid, 'a', 1, function(err, data){
+          as.indexOf(aid, 1, 'a', function(err, data){
             (err === null).should.be.true
             data.should.equal(-1)
             done()
           })
         })
         it('should get index of element in array with fromIndex (2)', function(done){
-          as.indexOf(aid, 'e', 3, function(err, data){
+          as.indexOf(aid, 3, 'e', function(err, data){
             (err === null).should.be.true
             data.should.equal(4)
             done()

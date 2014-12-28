@@ -16,9 +16,9 @@ function handleData(key){
   }
 }
 
-function storeOp(store, cmd, get, he, logTpl, aidx){
+function storeOp(store, cmd, get, he, logTpl, aidx, key){
   logTpl = (logTpl || '<cmd>ing <get> id: %s').replace(/<cmd>/gm, cmd).replace(/<get>/gm, get ? 'from' : 'to')
-  var handleFn = he ? handleError : handleData('data')
+  var handleFn = he ? handleError : handleData(key || 'data')
   return function(req, res){
     var cb = handleFn.bind(null, res)
     var id = req.params.id
@@ -48,6 +48,14 @@ module.exports = function(store){
       req.params.index = index
       next()
     },
+    checkBeginEnd: function(req, res, next){
+      var begin = parseInt(req.params.begin, 10)
+      var end = parseInt(req.params.end, 10)
+      if(isNaN(begin) || isNaN(end)) return res.send({error: 'invalid begin or end'})
+      req.params.begin = begin
+      req.params.end = end
+      next()
+    },
     checkBody: function(req, res, next){
       if(!req.body) {
         debug('body is empty id: %s', req.params.id)
@@ -68,19 +76,10 @@ module.exports = function(store){
     set: storeOp(store, 'set', false, true, '<cmd>ting at %d from id: %s', true),
     get: storeOp(store, 'get', true, false, '<cmd>ting at %d from id: %s', true),
     remove: storeOp(store, 'remove', true, false, 'removeing at %d from id: %s', true),
-    indexOf: function(req, res){
-      var id = req.params.id
-      var index = req.params.index || 0
-      debug('indexof at %d from id: %s', index, id)
-      store.indexOf(id, req.body, index, handleData('index').bind(null, res))
-    },
+    indexOf: storeOp(store, 'indexOf', false, false, 'indexof at %d from id: %s', true, 'index'),
     slice: function(req, res){
-      var id = req.params.id
-      var begin = parseInt(req.params.begin, 10)
-      var end = parseInt(req.params.end, 10)
-      if(isNaN(begin) || isNaN(end)) return res.send({error: 'invalid begin or end'})
-      debug('slicing at (%s - %s) from id: %s', begin, end, id)
-      store.slice(id, begin, end, handleData('data').bind(null, res))
+      debug('slicing at (%s - %s) from id: %s', req.params.begin, req.params.end, req.params.id)
+      store.slice(req.params.id, req.params.begin, req.params.end, handleData('data').bind(null, res))
     }
   }
 }
