@@ -5,6 +5,10 @@
 
     $ npm install && npm start
 
+## Test Server
+
+A test server is running at [heroku](https://aaas-test.herokuapp.com/).
+
 ## Licence
 
 The [MIT License (MIT)](http://opensource.org/licenses/MIT)
